@@ -38,7 +38,7 @@ export default function Sidebar() {
   const activeNote = useSelector((state) => state.notes.activeNote);
   const isDarkMode = useSelector((state) => state.notes.isDarkMode);
 
-  // ✅ Sidebar toggle state
+  
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -80,7 +80,7 @@ export default function Sidebar() {
     dispatch(addNote(newNote));
     navigate("/editor/rich");
 
-    // ✅ Close sidebar only on mobile
+   
     if (window.innerWidth < 768) closeSidebar();
   };
 
@@ -104,7 +104,7 @@ export default function Sidebar() {
   const [recentFilter, setRecentFilter] = useState("Last Update");
   const recentOptions = ["Last Update", "Created Date", "Title A-Z"];
 
-  // ✅ Close sidebar when clicking outside (for mobile)
+
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (
@@ -121,7 +121,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* ✅ Mobile Toggle Button - Fixed at Top */}
+      
       <button
         onClick={toggleSidebar}
         className={`menu-button fixed top-4 left-4 z-50 p-2 rounded-lg shadow-lg md:hidden ${
@@ -133,7 +133,7 @@ export default function Sidebar() {
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* ✅ Overlay for mobile */}
+    
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
@@ -141,7 +141,7 @@ export default function Sidebar() {
         ></div>
       )}
 
-      {/* ✅ Sidebar */}
+   
       <div
         className={`sidebar-container fixed top-0 left-0 h-full z-40 transform transition-transform duration-300
         ${isDarkMode ? "bg-gray-900 text-white" : "bg-white"}
@@ -149,7 +149,7 @@ export default function Sidebar() {
         md:translate-x-0 w-64 md:w-80 border-r overflow-y-auto`}
       >
         <div className="p-5 flex flex-col h-full">
-          {/* Top Bar */}
+     
           <div className="flex justify-between mb-6 items-center">
             <h2 className="text-xl font-semibold">Smart Notes</h2>
             <div className="flex items-center gap-3">
@@ -290,6 +290,13 @@ export default function Sidebar() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{note.title}</p>
+                      {note.image && (
+  <img
+    src={note.image}
+    alt="Drawing Preview"
+    className="mt-2 w-full rounded-md border border-gray-200 dark:border-gray-700"
+  />
+)}
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {new Date(note.updatedAt).toLocaleDateString()}
                       </p>

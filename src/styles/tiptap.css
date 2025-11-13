@@ -1,88 +1,165 @@
-
+/* === Base Styles === */
 .ProseMirror {
-    outline: none;
-    padding: 1rem;
-    line-height: 1.6;
+  outline: none;
+  padding: 1rem;
+  line-height: 1.6;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  background: var(--editor-bg, #fff);
+  color: var(--editor-text, #111);
+  border-radius: 0.5rem;
+}
+
+/* Paragraphs */
+.ProseMirror p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* === Blockquote === */
+.ProseMirror blockquote {
+  border-left: 4px solid #ddd;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  color: #555;
+  background-color: #f9f9f9;
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+}
+
+/* === Code Blocks === */
+.ProseMirror pre {
+  background: #1e1e1e;
+  color: #e2e2e2;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.ProseMirror code {
+  background: rgba(175, 184, 193, 0.15);
+  color: #eb5757;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.ProseMirror pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* === Tables === */
+.ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  overflow-x: auto;
+  display: block;
+  border: 1px solid #ddd;
+}
+
+.ProseMirror table td,
+.ProseMirror table th {
+  min-width: 80px;
+  border: 1px solid #ddd;
+  padding: 8px;
+  word-break: break-word;
+  background-color: #fff;
+}
+
+.ProseMirror table th {
+  font-weight: 600;
+  background-color: #f5f5f5;
+  text-align: left;
+}
+
+.ProseMirror table .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+
+/* === Links === */
+.ProseMirror a {
+  color: #007bff;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.ProseMirror a:hover {
+  color: #0056b3;
+}
+
+/* === Images === */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* === Mobile Responsive Tweaks === */
+@media (max-width: 768px) {
+  .ProseMirror {
+    padding: 0.75rem;
+    font-size: 0.95rem;
   }
-  
-  .ProseMirror p {
-    margin-bottom: 1rem;
-  }
-  
- 
+
   .ProseMirror blockquote {
-    border-left: 4px solid #ddd;
-    margin: 1rem 0;
-    padding-left: 1rem;
-    color: #666;
-    background-color: #f9f9f9;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0 4px 4px 0;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
   }
-  
-  
+
+  .ProseMirror pre {
+    font-size: 0.85rem;
+  }
+
+  .ProseMirror table td,
+  .ProseMirror table th {
+    padding: 6px;
+    font-size: 0.9rem;
+  }
+}
+
+/* === Dark Mode Support === */
+@media (prefers-color-scheme: dark) {
+  .ProseMirror {
+    background: #121212;
+    color: #e0e0e0;
+  }
+
+  .ProseMirror blockquote {
+    border-left-color: #444;
+    background: #1e1e1e;
+    color: #bbb;
+  }
+
   .ProseMirror pre {
     background: #2d2d2d;
     color: #ccc;
-    font-family: 'JetBrains Mono', monospace;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
   }
-  
-  .ProseMirror code {
-    background: rgba(175, 184, 193, 0.2);
-    color: #eb5757;
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-    font-size: 0.85em;
-  }
-  
-  .ProseMirror pre code {
-    background: none;
-    color: inherit;
-    padding: 0;
-    font-size: inherit;
-  }
-  
 
-    .ProseMirror table {
-    border-collapse: collapse;
-    table-layout: fixed;
-    width: 100%;
-    margin: 1rem 0;
-    overflow: hidden;
-    border: 1px solid #ddd;
-  }
-  
   .ProseMirror table td,
   .ProseMirror table th {
-    min-width: 1em;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    vertical-align: top;
-    box-sizing: border-box;
-    background-color: #fff;
+    background: #1c1c1c;
+    border-color: #333;
+    color: #ddd;
   }
-  
-  .ProseMirror table th {
-    font-weight: 600;
-    text-align: left;
-    background-color: #f5f5f5;
-  }
-  
-  .ProseMirror table .selectedCell:after {
-    z-index: 2;
-    position: absolute;
-    content: "";
-    left: 0; right: 0; top: 0; bottom: 0;
-    background: rgba(200, 200, 255, 0.4);
-    pointer-events: none;
-  }
-  
 
   .ProseMirror a {
-    color: #007bff;
-    text-decoration: underline;
+    color: #4da3ff;
   }
+}

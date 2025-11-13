@@ -104,7 +104,7 @@ function Navbar() {
 
   return (
     <div className={`border-b bg-white dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 w-full`}>
-      {/* First Row: Title and Buttons */}
+   
       <div className="px-3 py-2 sm:px-4 sm:py-3">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <input
@@ -115,8 +115,8 @@ function Navbar() {
             className={`text-gray-600 dark:text-gray-300 text-sm sm:text-[15px] bg-transparent outline-none w-full sm:flex-1 placeholder-gray-400 dark:placeholder-gray-500`}
           />
           
-          {/* Menu Items - Responsive Grid */}
-          <div className="flex sm:flex-row flex-wrap gap-1 sm:gap-2 mt-2 sm:mt-0">
+         
+          <div className="flex sm:flex-row flex-wrap gap-1 sm:gap-2 mt-2 sm:mt-0 ">
             {menu.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -161,8 +161,8 @@ function Navbar() {
           </div>
 
           {/* Tags */}
-          <div className="flex items-center gap-2 w-[40%]">
-            <div className=" w-[50%] flex items-center gap-2 mb-2 ">
+          <div className="flex items-center gap-2 ">
+            <div className="  flex items-center gap-2 mb-2 ">
               <LuTag className="text-gray-600 text-sm  dark:text-gray-400  flex-shrink-0" />
               <span className="text-sm text-gray-700 dark:text-gray-300">Tags:</span>
             </div>

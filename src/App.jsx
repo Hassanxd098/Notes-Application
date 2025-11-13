@@ -14,8 +14,11 @@ export default function App() {
     <div className={isDarkMode ? "dark bg-gray-900 text-white" : "bg-white text-gray-900"}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<RootLayout />}>
-            <Route index element={<Welcome />} />
+          {/* ✅ Standalone Welcome Page (No Sidebar or Navbar) */}
+          <Route path="/" element={<Welcome />} />
+
+          {/* ✅ All other pages use RootLayout (with Sidebar & Navbar) */}
+          <Route element={<RootLayout />}>
             <Route path="editor/rich" element={<RichEditorPage />} />
             <Route path="editor/text" element={<TextEditorPage />} />
             <Route path="draw" element={<DrawEditorPage />} />
