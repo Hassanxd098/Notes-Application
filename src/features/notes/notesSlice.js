@@ -9,7 +9,7 @@ const saveNotes = (notes) => {
   localStorage.setItem("notes", JSON.stringify(notes));
 };
 
-const notesSlice = createSlice({
+const notesSlice = createSlice({  
   name: "notes",
   initialState: {
     notes: loadNotes(),
@@ -17,6 +17,7 @@ const notesSlice = createSlice({
     editorMode: 'text',
     isDarkMode: localStorage.getItem('darkMode') === 'true',
     hasSeenWelcome: localStorage.getItem('hasSeenWelcome') === 'true',
+    rightSidePane: ""
   },
   reducers: {
     addNote: (state, action) => {
@@ -37,6 +38,10 @@ const notesSlice = createSlice({
     },
     setActiveNote: (state, action) => {
       state.activeNote = state.notes.find(n => n.id === action.payload) || null;
+    },
+    setRightSidePane: (state, action) => {
+      console.log(action);
+      state.rightSidePane = action.payload;
     },
   
     updateNote: (state, action) => {
@@ -115,6 +120,7 @@ export const {
   setEditorMode,
   toggleDarkMode,
   setHasSeenWelcome,
+  setRightSidePane
 } = notesSlice.actions;
 
 export default notesSlice.reducer;

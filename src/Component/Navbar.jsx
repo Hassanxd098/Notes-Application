@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { updateNote } from "../features/notes/notesSlice";
+import { setRightSidePane, updateNote } from "../features/notes/notesSlice";
 import { RxText } from "react-icons/rx";
 import { FiFileText, FiPenTool } from "react-icons/fi";
 import { RiRobot2Line } from "react-icons/ri";
@@ -13,14 +13,16 @@ function Navbar() {
   const dispatch = useDispatch();
   const activeNote = useSelector((state) => state.notes.activeNote);
   const location = useLocation();
-  const isDarkMode = useSelector((state) => state.notes.isDarkMode);
+  // const isDarkMode = useSelector((state) => state.notes.isDarkMode);
+  const pane = useSelector((state) => state.notes.rightSidePane);
+
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState([]);
 
-  // Refs to prevent stale closure bugs
+ 
   const titleRef = useRef(title);
   const contentRef = useRef(content);
   const tagsRef = useRef(tags);
@@ -29,13 +31,32 @@ function Navbar() {
   useEffect(() => { contentRef.current = content; }, [content]);
   useEffect(() => { tagsRef.current = tags; }, [tags]);
 
+
   const menu = [
     { name: "Text", icon: <RxText />, path: "/editor/text" },
     { name: "Rich", icon: <FiFileText />, path: "/editor/rich" },
     { name: "Draw", icon: <FiPenTool />, path: "/draw" },
-    { name: "AI", icon: <RiRobot2Line />, path: "/smart" },
-  ];
+  
 
+    {
+      name: pane === "AI" ? "Close AI" : "AI",
+      icon: <RiRobot2Line />,
+      path: "/smart",
+      additionalProps: {
+        onClick: (e) => {
+          e.preventDefault(); 
+  
+          if (pane === "AI") {
+            console.log("Closing AI...");
+            dispatch(setRightSidePane(""));
+          } else {
+            console.log("Opening AI...");
+            dispatch(setRightSidePane("AI"));
+          }
+        }
+      }
+    }
+  ];
   useEffect(() => {
     if (activeNote) {
       setTitle(activeNote.title);
@@ -128,6 +149,7 @@ function Navbar() {
                       ? "bg-black text-white border-black dark:bg-white dark:text-black"
                       : "bg-white text-black border-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700"
                   }`}
+                  {...(item?.additionalProps || {})}
                 >
                   {item.icon} 
                   <span className="hidden sm:inline">{item.name}</span>

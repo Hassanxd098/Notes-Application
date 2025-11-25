@@ -6,13 +6,12 @@ function Welcome() {
   return (
     <div className="h-screen w-full bg-gradient-to-br from-violet-700 via-purple-600 to-fuchsia-500 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
 
-      {/* Floating glow effect */}
+
       <div className="absolute inset-0">
         <div className="absolute -top-10 -left-10 w-72 h-72 bg-purple-400 rounded-full blur-3xl opacity-30 animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-pink-400 rounded-full blur-3xl opacity-30 animate-pulse delay-700"></div>
       </div>
 
-      {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-8 max-w-2xl">
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight drop-shadow-lg animate-fadeIn">
           Smart Notes
@@ -29,7 +28,7 @@ function Welcome() {
         </Link>
       </div>
 
-      {/* Footer text */}
+ 
       <p className="absolute bottom-5 text-gray-200 text-sm sm:text-base opacity-75">
         ✨ Your ideas deserve a smarter space ✨
       </p>

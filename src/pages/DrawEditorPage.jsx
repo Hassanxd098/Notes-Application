@@ -9,10 +9,10 @@ import {
   LuSave,
 } from "react-icons/lu";
 import { useDispatch } from "react-redux";
-import { addNote } from "../features/notes/notesSlice"; // ✅ import from your notesSlice
+import { addNote } from "../features/notes/notesSlice"; 
 
 export default function DrawEditorPage() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(" ");
   const [ctx, setCtx] = useState(null);
   const [tool, setTool] = useState("pen");
   const [size, setSize] = useState(2);
@@ -42,8 +42,8 @@ export default function DrawEditorPage() {
     };
 
     resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    return () => window.removeEventListener("resize", resizeCanvas);
+    // window.addEventListener("resize", resizeCanvas);
+    // return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
   const getMousePos = (e) => {
@@ -52,6 +52,7 @@ export default function DrawEditorPage() {
   };
 
   const startDraw = (e) => {
+    // debugger;
     if (!ctx) return;
     const { x, y } = getMousePos(e);
     setStartPos({ x, y });
@@ -104,21 +105,21 @@ export default function DrawEditorPage() {
     link.click();
   };
 
-  // ✅ Save drawing as note
+
   const saveDrawing = () => {
     if (!canvasRef.current) return;
     const imageData = canvasRef.current.toDataURL("image/png");
     const newNote = {
       title: "Drawing Note",
       content: "<p>Drawing saved</p>",
-      image: imageData,   // ✅ this is key
-      tags: ["drawing"],
+      image: imageData,  
+      // tags: ["drawing"],
     };
     dispatch(addNote(newNote));
   };
   return (
     <div className="flex flex-col h-[70vh] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      {/* Toolbar */}
+        {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-800 p-3 rounded-none md:rounded-xl shadow-sm mb-2 md:mb-4 transition-colors duration-300">
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
           {[{ name: "pen", icon: <LuPenLine /> },
@@ -158,7 +159,7 @@ export default function DrawEditorPage() {
           <button onClick={downloadCanvas} title="Download">
             <LuDownload className="text-gray-700 dark:text-gray-300 hover:text-green-500 text-lg sm:text-base" />
           </button>
-          {/* ✅ New Save Button */}
+         
           <button onClick={saveDrawing} title="Save to Sidebar">
             <LuSave className="text-gray-700 dark:text-gray-300 hover:text-blue-500 text-lg sm:text-base" />
           </button>
@@ -182,3 +183,5 @@ export default function DrawEditorPage() {
     </div>
   );
 }
+
+

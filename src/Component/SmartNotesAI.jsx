@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FiSend } from "react-icons/fi";
 import { FaRobot, FaUserCircle } from "react-icons/fa";
-
+// import { useDispatch } from "react-redux";
+// import { setRightSidePane } from "../features/notes/notesSlice";
 const SmartNotesAI = () => {
+  // const dispatch = useDispatch();
+
   const knowledgeBase = [
     {
       question: "what is smart notes?",
@@ -32,13 +35,11 @@ const SmartNotesAI = () => {
     },
     {
       question: "Hi",
-      answer:
-        "How can i Help You ?",
+      answer: "How can i Help You ?",
     },
     {
       question: "who is the founder of smart notes",
-      answer:
-        "PM Hassan ur Rahman, Founder and CEO of Smart Notes",
+      answer: "PM Hassan ur Rahman, Founder and CEO of Smart Notes",
     },
   ];
 
@@ -65,7 +66,10 @@ const SmartNotesAI = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-black transition-all duration-300">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-black transition-all duration-300 relative">
+
+
+
       {/* Header */}
       <header className="text-center py-6 shadow-md bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg">
         <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">

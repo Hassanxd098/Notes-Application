@@ -24,6 +24,7 @@ import {
 const TiptapEditor = ({ value, onChange }) => {
   
   const addImage = (editor) => {
+  
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';

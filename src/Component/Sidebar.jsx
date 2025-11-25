@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   setActiveNote,
   togglePin,
@@ -31,6 +32,55 @@ const stripHtml = (html) => {
   return tmp.textContent || tmp.innerText || "";
 };
 
+/* ------------------ Side Alert Component ------------------ */
+/* ------------------ Modern Right-Side Animated Alert ------------------ */
+const SideAlert = ({ show, message, type = "success" }) => {
+  const color =
+    type === "success"
+      ? "bg-green-600"
+      : type === "error"
+      ? "bg-red-600"
+      : "bg-blue-600";
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 300, opacity: 0 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className={`fixed right-4 top-6 z-[9999] w-72 shadow-2xl rounded-xl overflow-hidden ${color}`}
+        >
+          {/* Typing effect */}
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "100%" }}
+            transition={{
+              duration: 0.8,
+              ease: "easeInOut",
+            }}
+            className="whitespace-nowrap overflow-hidden text-white font-medium px-4 py-3 text-sm"
+          >
+            {message}
+          </motion.div>
+
+          {/* Progress bar */}
+          <motion.div
+            initial={{ width: "100%" }}
+            animate={{ width: 0 }}
+            transition={{ duration: 3, ease: "linear" }}
+            className="h-1 bg-white/80"
+          ></motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+
+
+
 export default function Sidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +88,6 @@ export default function Sidebar() {
   const activeNote = useSelector((state) => state.notes.activeNote);
   const isDarkMode = useSelector((state) => state.notes.isDarkMode);
 
-  
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -71,6 +120,38 @@ export default function Sidebar() {
     );
   }
 
+  /* ---- Alert state + timer management ---- */
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+  const timerRef = useRef(null);
+
+  const showAlert = (message, type = "success", duration = 3000) => {
+    // clear previous timer if exists
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setAlert({ show: true, message, type });
+    timerRef.current = setTimeout(() => {
+      setAlert((prev) => ({ ...prev, show: false }));
+      timerRef.current = null;
+    }, duration);
+  };
+
+  useEffect(() => {
+    // cleanup on unmount
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+  /* ---------------------------------------- */
+
   const handleAddNote = () => {
     const newNote = {
       title: "Untitled",
@@ -80,30 +161,36 @@ export default function Sidebar() {
     dispatch(addNote(newNote));
     navigate("/editor/rich");
 
-   
+    // show success alert (3s)
+    showAlert("📝 New Note Created!", "success", 3000);
+
     if (window.innerWidth < 768) closeSidebar();
   };
 
-  const handleOpenFolder = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.webkitdirectory = true;
-    input.directory = true;
-    input.onchange = (event) => {
-      const files = event.target.files;
-      if (files.length > 0) {
-        alert(
-          `Opened folder: ${files[0].webkitRelativePath.split("/")[0]}`
-        );
-      }
-    };
-    input.click();
+  const handleCreateFolder = async () => {
+    try {
+      // Ask user to select a parent directory
+      const dirHandle = await window.showDirectoryPicker();
+  
+      // Ask user for the new folder name
+      const folderName = prompt("Enter folder name:");
+  
+      if (!folderName) return;
+  
+      // Create folder inside selected directory
+      const newFolder = await dirHandle.getDirectoryHandle(folderName, { create: true });
+  
+      alert(`Folder "${folderName}" created successfully!`);
+    } catch (error) {
+      console.error(error);
+      alert("Folder creation canceled or failed.");
+    }
   };
+  
 
   const [showRecent, setShowRecent] = useState(false);
   const [recentFilter, setRecentFilter] = useState("Last Update");
   const recentOptions = ["Last Update", "Created Date", "Title A-Z"];
-
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -121,19 +208,20 @@ export default function Sidebar() {
 
   return (
     <>
-      
+      {/* Side Alert (fixed near sidebar) */}
+      <SideAlert show={alert.show} message={alert.message} type={alert.type} />
+
       <button
         onClick={toggleSidebar}
         className={`menu-button fixed top-4 left-4 z-50 p-2 rounded-lg shadow-lg md:hidden ${
-          isDarkMode 
-            ? "bg-gray-800 text-white hover:bg-gray-700" 
+          isDarkMode
+            ? "bg-gray-800 text-white hover:bg-gray-700"
             : "bg-white text-gray-800 hover:bg-gray-100"
         }`}
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-    
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
@@ -141,7 +229,6 @@ export default function Sidebar() {
         ></div>
       )}
 
-   
       <div
         className={`sidebar-container fixed top-0 left-0 h-full z-40 transform transition-transform duration-300
         ${isDarkMode ? "bg-gray-900 text-white" : "bg-white"}
@@ -149,7 +236,6 @@ export default function Sidebar() {
         md:translate-x-0 w-64 md:w-80 border-r overflow-y-auto`}
       >
         <div className="p-5 flex flex-col h-full">
-     
           <div className="flex justify-between mb-6 items-center">
             <h2 className="text-xl font-semibold">Smart Notes</h2>
             <div className="flex items-center gap-3">
@@ -206,24 +292,22 @@ export default function Sidebar() {
 
           {/* Tabs */}
           <div className="flex sm:flex-wrap  justify-center sm:justify-start gap-2 mb-4">
-  {tabs.map((t) => (
-    <button
-      key={t.name}
-      onClick={() => setActiveTab(t.name)}
-      className={`flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm md:text-base font-medium transition-colors duration-200 ${
-        activeTab === t.name
-          ? "bg-black text-white dark:bg-white dark:text-black"
-          : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-      }`}
-    >
-      <span className="text-base sm:text-lg">{t.icon}</span>
-      <span className="whitespace-nowrap">{t.name}</span>
-    </button>
-  ))}
-</div>
+            {tabs.map((t) => (
+              <button
+                key={t.name}
+                onClick={() => setActiveTab(t.name)}
+                className={`flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm md:text-base font-medium transition-colors duration-200 ${
+                  activeTab === t.name
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+              >
+                <span className="text-base sm:text-lg">{t.icon}</span>
+                <span className="whitespace-nowrap">{t.name}</span>
+              </button>
+            ))}
+          </div>
 
-
-          {/* Recent Dropdown */}
           <h1 className="font-medium mb-1">Recent</h1>
           <div className="flex items-center justify-between mb-2">
             <div className="relative w-full">
@@ -257,15 +341,15 @@ export default function Sidebar() {
               )}
             </div>
             <button
-              onClick={handleOpenFolder}
-              className="ml-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-md"
-              title="Open Folder"
-            >
-              <RiFolderOpenLine />
-            </button>
+  onClick={handleCreateFolder}
+  className="ml-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-md"
+  title="Create Folder"
+>
+  <RiFolderOpenLine />
+</button>
           </div>
 
-          {/* Notes List */}
+        
           <h1 className="text-black dark:text-white p-2 font-medium">All</h1>
           <div className="flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
@@ -291,12 +375,12 @@ export default function Sidebar() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{note.title}</p>
                       {note.image && (
-  <img
-    src={note.image}
-    alt="Drawing Preview"
-    className="mt-2 w-full rounded-md border border-gray-200 dark:border-gray-700"
-  />
-)}
+                        <img
+                          src={note.image}
+                          alt="Drawing Preview"
+                          className="mt-2 w-full rounded-md border border-gray-200 dark:border-gray-700"
+                        />
+                      )}
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {new Date(note.updatedAt).toLocaleDateString()}
                       </p>
@@ -326,9 +410,7 @@ export default function Sidebar() {
                       >
                         <RiStarLine
                           className={
-                            note.starred
-                              ? "text-yellow-500"
-                              : "text-gray-400"
+                            note.starred ? "text-yellow-500" : "text-gray-400"
                           }
                         />
                       </button>
@@ -336,6 +418,8 @@ export default function Sidebar() {
                         onClick={(e) => {
                           e.stopPropagation();
                           dispatch(moveToTrash(note.id));
+                        
+                          showAlert("🗑️ Note Deleted Successfully!", "error", 3000);
                         }}
                         className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
                       >
